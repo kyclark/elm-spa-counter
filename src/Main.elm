@@ -75,6 +75,9 @@ update msg model =
         UrlChanged url ->
             changeRouteTo (Route.fromUrl url) model
 
+        CounterMsg subMsg ->
+            ( model, Cmd.none )
+
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
 changeRouteTo maybeRoute model =
@@ -82,7 +85,7 @@ changeRouteTo maybeRoute model =
         Just Route.Counter ->
             ( { model | cur_page = Counter Page.Counter.init }, Cmd.none )
 
-        Just Route.Home ->
+        _ ->
             ( { model | cur_page = Home }, Cmd.none )
 
 
@@ -106,4 +109,4 @@ view model =
             PageView.view Page.Home.view
 
         Counter subModel ->
-            PageView.view (Page.Counter.view subModel)
+            PageView.view (Html.map CounterMsg (Page.Counter.view subModel))
