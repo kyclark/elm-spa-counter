@@ -61,8 +61,8 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        LinkClicked urlRequest ->
+    case ( model.cur_page, msg ) of
+        ( _, LinkClicked urlRequest ) ->
             case urlRequest of
                 Browser.Internal url ->
                     ( model
@@ -72,10 +72,17 @@ update msg model =
                 Browser.External href ->
                     ( model, Nav.load href )
 
-        UrlChanged url ->
+        ( _, UrlChanged url ) ->
             changeRouteTo (Route.fromUrl url) model
 
-        CounterMsg subMsg ->
+        ( Counter subModel, CounterMsg subMsg ) ->
+            let
+                newSubModel =
+                    Page.Counter.update subMsg subModel
+            in
+            ( { model | cur_page = Counter newSubModel }, Cmd.none )
+
+        ( _, _ ) ->
             ( model, Cmd.none )
 
 

@@ -6013,11 +6013,20 @@ var $elm$url$Url$toString = function (url) {
 					_Utils_ap(http, url.host)),
 				url.path)));
 };
+var $author$project$Page$Counter$update = F2(
+	function (msg, model) {
+		if (msg.$ === 'Increment') {
+			return model + 1;
+		} else {
+			return model - 1;
+		}
+	});
 var $author$project$Main$update = F2(
 	function (msg, model) {
-		switch (msg.$) {
+		var _v0 = _Utils_Tuple2(model.cur_page, msg);
+		switch (_v0.b.$) {
 			case 'LinkClicked':
-				var urlRequest = msg.a;
+				var urlRequest = _v0.b.a;
 				if (urlRequest.$ === 'Internal') {
 					var url = urlRequest.a;
 					return _Utils_Tuple2(
@@ -6033,14 +6042,26 @@ var $author$project$Main$update = F2(
 						$elm$browser$Browser$Navigation$load(href));
 				}
 			case 'UrlChanged':
-				var url = msg.a;
+				var url = _v0.b.a;
 				return A2(
 					$author$project$Main$changeRouteTo,
 					$author$project$Route$fromUrl(url),
 					model);
 			default:
-				var subMsg = msg.a;
-				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				if (_v0.a.$ === 'Counter') {
+					var subModel = _v0.a.a;
+					var subMsg = _v0.b.a;
+					var newSubModel = A2($author$project$Page$Counter$update, subMsg, subModel);
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								cur_page: $author$project$Main$Counter(newSubModel)
+							}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
 		}
 	});
 var $author$project$Main$CounterMsg = function (a) {
@@ -6048,6 +6069,7 @@ var $author$project$Main$CounterMsg = function (a) {
 };
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
+var $author$project$Page$Counter$Decrement = {$: 'Decrement'};
 var $author$project$Page$Counter$Increment = {$: 'Increment'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$json$Json$Encode$string = _Json_wrap;
@@ -6106,6 +6128,17 @@ var $author$project$Page$Counter$view = function (model) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text('+')
+					])),
+				A2(
+				$elm$html$Html$button,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('btn btn-primary'),
+						$elm$html$Html$Events$onClick($author$project$Page$Counter$Decrement)
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('-')
 					]))
 			]));
 };
